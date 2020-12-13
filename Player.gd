@@ -1,7 +1,7 @@
 extends KinematicBody2D
 export var x_limits = 300
 var momentum = Vector2.ZERO
-export var x_speed = 30
+export var x_speed = 50
 export var fall_speed = 15
 export var terminal_velocity = 500
 var is_ljing = false
@@ -20,11 +20,14 @@ func _ready():
 func _physics_process(delta):
 	if position.y > 1024:
 		get_tree().reload_current_scene()
-	var t_x_limits = 500 if is_ljing else x_limits
+	var t_x_limits = 500 if is_ljing else 300
 	momentum.x = clamp(momentum.x, -t_x_limits, t_x_limits)
+	print(momentum.x)
 	if Input.is_action_pressed("l"):
-		momentum.x-=x_speed
-	if Input.is_action_pressed("r"):
+		$Sprite.scale.x = -1
+		momentum.x -= 50
+	elif Input.is_action_pressed("r"):
+		$Sprite.scale.x = 1 
 		momentum.x+=x_speed
 	else:
 		momentum.x = lerp(momentum.x, 0, 0.2)
@@ -43,7 +46,7 @@ func _physics_process(delta):
 		if Input.is_action_pressed("j"):
 			queue_timer += 10
 		if Input.is_action_pressed("lj") and is_ljing == false:
-			if momentum.x != 0:
+			if abs(momentum.x) >= 5:
 				momentum.y -= 30
 				momentum.x = 200 if momentum.x > 0 else -200
 				is_ljing = true
@@ -53,10 +56,10 @@ func _physics_process(delta):
 			momentum.y -= 110
 		if Input.is_action_pressed("lj"):
 			queue_timer = 0
-			if momentum.x != 0:
-				momentum.y -= 60
+			if abs(momentum.x) >= 5:
+				momentum.y -= 85
 				momentum.x = 500 if momentum.x > 0 else -500
 				is_ljing = true
 	move_and_slide(momentum, Vector2.UP)
-	print(timer)
+
 	
