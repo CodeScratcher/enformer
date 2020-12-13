@@ -7,6 +7,7 @@ export var terminal_velocity = 500
 var is_ljing = false
 var queue_timer = 0
 var timer = 0
+export (int, 0, 200) var push = 100
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -60,6 +61,15 @@ func _physics_process(delta):
 				momentum.y -= 85
 				momentum.x = 500 if momentum.x > 0 else -500
 				is_ljing = true
-	move_and_slide(momentum, Vector2.UP)
+	move_and_slide(momentum, Vector2.UP, false, 4, PI/4, false)
+	
+
+
+	# after calling move_and_slide()
+
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		if collision.collider.is_in_group("bodies"):
+			collision.collider.apply_central_impulse(-collision.normal * 100 * momentum.length() * 0.01)
 
 	
